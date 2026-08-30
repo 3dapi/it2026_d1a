@@ -2,9 +2,9 @@
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <RootNamespace>_26031020_이동윤_자기이력서</RootNamespace>
-    <AssemblyTitle>26031020_이동윤_자기이력서</AssemblyTitle>
-    <Product>26031020_이동윤_자기이력서</Product>
+    <RootNamespace>_26031023_이진호_자기이력서작성</RootNamespace>
+    <AssemblyTitle>26031023_이진호_자기이력서작성</AssemblyTitle>
+    <Product>26031023_이진호_자기이력서작성</Product>
     <Copyright>Copyright ©  2026</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
