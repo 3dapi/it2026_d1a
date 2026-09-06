@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net9.0-windows</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UseWindowsForms>true</UseWindowsForms>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="glc2dcsharp" Version="0.1.0.7" />
+		<PackageReference Include="NAudio" Version="2.3.0" />
+		<PackageReference Include="Vortice.Direct2D1" Version="3.8.3" />
+		<PackageReference Include="Vortice.WinForms" Version="3.8.3" />
+		<PackageReference Include="Vortice.XAudio2" Version="3.8.3" />
+		<PackageReference Include="Vortice.XInput" Version="3.8.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="resource\tex_effect\" />
+	  <Folder Include="resource\tex_planet\" />
+	  <Folder Include="resource\tex_ui\" />
+	</ItemGroup>
+
+	<!-- resource 폴더의 모든 파일을 실행 폴더로 복사 -->
+
+	<!-- 비어 있는 폴더도 프로젝트에 표시하기 위한 설정 -->
+
+</Project>

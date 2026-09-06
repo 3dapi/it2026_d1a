@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vortice.WinForms" Version="*" />
+    <PackageReference Include="Vortice.Direct2D1" Version="*" />
+    <PackageReference Include="Vortice.XInput" Version="*" />
+    <PackageReference Include="Vortice.XAudio2" Version="*" />
+    <PackageReference Include="NAudio" Version="3.0.1" />
+    <PackageReference Include="glc2dcsharp" Version="*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="resource\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
