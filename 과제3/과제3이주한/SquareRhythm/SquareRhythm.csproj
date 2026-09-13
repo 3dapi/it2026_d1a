@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>True</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="glc2dcsharp" Version="0.1.0.7" />
+    <PackageReference Include="NAudio" Version="3.0.1" />
+    <PackageReference Include="Vortice.Direct2D1" Version="3.8.3" />
+    <PackageReference Include="Vortice.WinForms" Version="3.8.3" />
+    <PackageReference Include="Vortice.XAudio2" Version="3.8.3" />
+    <PackageReference Include="Vortice.XInput" Version="3.8.3" />
+  </ItemGroup>
+
+</Project>
