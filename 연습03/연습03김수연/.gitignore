@@ -1,0 +1,76 @@
+########################################
+# unreal
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+Plugins/*/Intermediate/
+Plugins/*/Binaries/
+StarterContent/
+*/Content/ThirdPerson/
+*/Content/Characters/
+
+########################################
+# svn
+.svn/
+
+########################################
+# Visual Studio
+_LIB/
+_OBJ/
+_bin/
+Debug/
+Release/
+packages/
+.vs/
+.vscode/
+.tlog/
+**/bin/
+**/obj/
+UpgradeLog.htm
+*.tlog
+*.idb
+*.ilk
+*.recipe
+*.log
+*.obj
+*.pdb
+*.sln.docstates
+*.user
+*.userosscache
+*.suo
+*.VC.db
+*.opensdf
+
+########################################
+# android studio
+.gradle/
+.cxx/
+build/
+**/main/assets/
+.externalNativeBuild/
+
+########################################
+# xcode
+*.xcuserstate
+**/DerivedData/
+**/xcuserdata/
+
+########################################
+# Rider
+.idea
+JetBrains/
+JetBrains.meta
+_ReSharper.Caches/
+
+########################################
+# OS
+.github
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
