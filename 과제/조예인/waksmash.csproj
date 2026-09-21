@@ -8,34 +8,37 @@
     <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
-  <ItemGroup>
+<ItemGroup>
+    <!-- resource 폴더의 파일을 빌드 출력 폴더로 복사 -->
+    <None Update="resource\**\*">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+
+    <!-- docs 폴더는 프로젝트 빌드 대상에서 제외 -->
     <Compile Remove="docs\**" />
     <EmbeddedResource Remove="docs\**" />
     <None Remove="docs\**" />
-  </ItemGroup>
+</ItemGroup>
 
-  <ItemGroup>
+<ItemGroup>
+    <!-- README 파일을 빌드 대상에서 제외 -->
     <None Remove="glc2d\README.md" />
     <None Remove="README.md" />
-  </ItemGroup>
+</ItemGroup>
 
-  <ItemGroup>
+<ItemGroup>
+    <!-- 솔루션 파일 -->
     <None Include="waksmash.sln" />
-  </ItemGroup>
+</ItemGroup>
 
-  <ItemGroup>
+<ItemGroup>
+    <!-- NuGet 패키지 -->
     <PackageReference Include="glc2dcsharp" Version="0.1.0.7" />
     <PackageReference Include="NAudio" Version="3.0.1" />
     <PackageReference Include="Vortice.Direct2D1" Version="3.8.3" />
     <PackageReference Include="Vortice.WinForms" Version="3.8.3" />
     <PackageReference Include="Vortice.XAudio2" Version="3.8.3" />
     <PackageReference Include="Vortice.XInput" Version="3.8.3" />
-  </ItemGroup>
-
-<ItemGroup>
-  <None Update="resource\**\*">
-    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-  </None>
 </ItemGroup>
 
 </Project>

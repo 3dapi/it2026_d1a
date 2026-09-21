@@ -23,7 +23,7 @@ class G2D2DContext : IDisposable
 		Factory = D2D1.D2D1CreateFactory<ID2D1Factory1>();
 		DWriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory>();
 		RenderTarget = Factory.CreateHwndRenderTarget(
-			  new RenderTargetProperties()
+			  new RenderTargetProperties { DpiX = 96, DpiY = 96 }
 			, new HwndRenderTargetProperties
 			{
 				Hwnd = hwnd,

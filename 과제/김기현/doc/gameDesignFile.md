@@ -115,7 +115,7 @@
 ## 층별 배경
 
 ### 1층
-![1층 배경](../RandomDoor_tower/resource/fistfloor.png)
+![1층 배경](../RandomDoor_tower/resource/firstfloor.png)
 
 ### 2층
 ![2층 배경](../RandomDoor_tower/resource/secondfloor.png)

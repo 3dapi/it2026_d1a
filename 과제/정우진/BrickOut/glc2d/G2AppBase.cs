@@ -60,7 +60,7 @@ abstract class G2AppBase : IDisposable
 		{
 			Text = GameName,
 			StartPosition = FormStartPosition.CenterScreen,
-			ClientSize = ScreenSize
+			ClientSize = GetInitialClientSize()
 		};
 		G2D2DContext? graphics = null;
 		G2AudioContext? audioContext = null;
@@ -87,6 +87,21 @@ abstract class G2AppBase : IDisposable
 			throw;
 		}
 		Instance = this;
+	}
+
+	private System.Drawing.Size GetInitialClientSize()
+	{
+		Rectangle workingArea = Screen.PrimaryScreen?.WorkingArea
+			?? new Rectangle(0, 0, ScreenSize.Width, ScreenSize.Height);
+		int maxWidth = Math.Max(1, workingArea.Width - 40);
+		int maxHeight = Math.Max(1, workingArea.Height - 80);
+		float scale = Math.Min(
+			1.0f,
+			Math.Min((float)maxWidth / ScreenSize.Width, (float)maxHeight / ScreenSize.Height));
+
+		return new System.Drawing.Size(
+			(int)(ScreenSize.Width * scale),
+			(int)(ScreenSize.Height * scale));
 	}
 
 	public void Run()

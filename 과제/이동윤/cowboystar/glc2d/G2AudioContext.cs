@@ -39,7 +39,7 @@ class G2AudioContext : IDisposable
 
 	public void Dispose()
 	{
-		MasteringVoice.Dispose();
+		//MasteringVoice.Dispose();
 		Audio.Dispose();
 		Instance = null;
 	}

@@ -130,21 +130,35 @@ abstract class G2AppBase : IDisposable
 		_previousTime = currentTime;
 	}
 
-	private void Update2D()
+    private void Update2D()
+    {
+        Update();
+    }
+
+    private void Render2D()
 	{
-		Update();
-	}
+    	ID2D1HwndRenderTarget renderTarget = _graphics.RenderTarget;
 
-	private void Render2D()
-	{
-		ID2D1HwndRenderTarget renderTarget = _graphics.RenderTarget;
-		renderTarget.Transform = System.Numerics.Matrix3x2.CreateScale(ScreenScaleX, ScreenScaleY);
-		renderTarget.BeginDraw();
-		renderTarget.Clear(ClearColor);
+	    // 가로/세로 중 작은 배율을 사용하여 16:9 비율 유지
+	    float scale = Math.Min(ScreenScaleX, ScreenScaleY);
 
-		Render();
+	    // 남는 공간을 계산하여 화면 중앙에 배치
+	    float offsetX =
+	        (_mainForm.ClientSize.Width - ScreenSize.Width * scale) / 2.0f;
 
-		renderTarget.EndDraw();
+	    float offsetY =
+	        (_mainForm.ClientSize.Height - ScreenSize.Height * scale) / 2.0f;
+
+	    renderTarget.Transform =
+	        System.Numerics.Matrix3x2.CreateScale(scale, scale) *
+	        System.Numerics.Matrix3x2.CreateTranslation(offsetX, offsetY);
+
+	    renderTarget.BeginDraw();
+	    renderTarget.Clear(ClearColor);
+
+	    Render();
+
+	    renderTarget.EndDraw();
 	}
 
 	private void MainFormResize(object? sender, EventArgs e)

@@ -17,4 +17,9 @@
     <PackageReference Include="Vortice.XInput" Version="3.8.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\resource\image\title.png" Link="resource\image\title.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Update="resource\**\*.png" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

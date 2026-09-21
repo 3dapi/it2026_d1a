@@ -14,12 +14,12 @@ namespace PlaneSurvivor
         // ---- 위치 / 크기 (기획서 8번: 플레이어 행동) ----
         public float X { get; private set; }
         public float Y { get; private set; }
-        public float Width { get; } = 64f;
-        public float Height { get; } = 64f;
+        public float Width { get; } = 45f;
+        public float Height { get; } = 48f;
         public float Speed { get; set; } = 250f; // 초당 이동 픽셀
 
         // ---- HP / 무적 (기획서 4번: HP 시스템) ----
-        public int MaxHP { get; } = 5;
+        public int MaxHP { get; } = 100;
         public int CurrentHP { get; private set; }
         public bool IsInvincible { get; private set; }
         private float _invincibleTimer;
@@ -43,11 +43,22 @@ namespace PlaneSurvivor
             CurrentHP = MaxHP;
         }
 
-        /// <summary>리소스 로드. SceneMain.Initialize()에서 한 번만 호출 (README 19번 원칙).</summary>
+        /// <summary>리소스 로드. SceneMain.Initialize()에서 딱 한 번만 호출 (README 19번 원칙).</summary>
         public void Initialize()
         {
             // 실제 이미지 경로로 교체 필요
             _texture = new G2Texture("resource/texture/player.png");
+        }
+
+        /// <summary>게임 재시작 시 위치/HP/무적 상태만 초기화. 텍스처는 그대로 재사용 (다시 로드하지 않음).</summary>
+        public void Reset(float startX, float startY)
+        {
+            X = startX;
+            Y = startY;
+            CurrentHP = MaxHP;
+            IsInvincible = false;
+            _invincibleTimer = 0f;
+            _fireCooldown = 0f;
         }
 
         public void Update()
@@ -89,7 +100,14 @@ namespace PlaneSurvivor
             if (_fireCooldown <= 0f)
             {
                 _fireCooldown = FireInterval;
-                OnFireBullet?.Invoke(X + Width / 2f, Y);
+
+                // 날개 양쪽에서 정면으로 발사 (오른쪽으로 살짝 보정)
+                float offsetX = 8f; // 이 값을 키우면 더 오른쪽으로 이동
+                float leftWingX = X + Width * 0.15f + offsetX;
+                float rightWingX = X + Width * 0.85f + offsetX;
+
+                OnFireBullet?.Invoke(leftWingX, Y);
+                OnFireBullet?.Invoke(rightWingX, Y);
             }
         }
 
@@ -105,11 +123,15 @@ namespace PlaneSurvivor
         {
             if (IsInvincible || CurrentHP <= 0) return;
 
-            CurrentHP--;
+            CurrentHP -= 10;
             IsInvincible = true;
             _invincibleTimer = InvincibleDuration;
 
-            if (CurrentHP <= 0) OnDied?.Invoke();
+            if (CurrentHP <= 0)
+            {
+                CurrentHP = 0;
+                OnDied?.Invoke();
+            }
         }
 
         public void Render()

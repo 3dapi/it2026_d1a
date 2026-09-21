@@ -11,7 +11,7 @@ internal static class AppMain
 	[STAThread]
 	private static void Main()
 	{
-		ApplicationConfiguration.Initialize();
+		//ApplicationConfiguration.Initialize();
 
 		using GameMain app = new();
 		app.Run();

@@ -56,13 +56,14 @@ abstract class G2AppBase : IDisposable
 		{
 			throw new InvalidOperationException("G2AppBase instance already exists.");
 		}
-		_mainForm = new RenderForm
-		{
-			Text = GameName,
-			StartPosition = FormStartPosition.CenterScreen,
-			ClientSize = ScreenSize
-		};
-		G2D2DContext? graphics = null;
+        _mainForm = new RenderForm
+        {
+            Text = GameName,
+            StartPosition = FormStartPosition.CenterScreen,
+            AutoScaleMode = AutoScaleMode.None,
+            ClientSize = ScreenSize
+        };
+        G2D2DContext? graphics = null;
 		G2AudioContext? audioContext = null;
 		G2InputContext? inputContext = null;
 		try

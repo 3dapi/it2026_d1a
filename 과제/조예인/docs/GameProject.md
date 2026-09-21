@@ -8,16 +8,14 @@
 
 ### 목적
 - 필드에서 **안전한 타일**과 **벌레가 있는 타일**을 구분한다.
-- 타일에 표시되는 **숫자**를 통해 벌레의 위치를 추론한다.
-- 벌레가 있다고 판단되는 타일에는 **느낌표 마크**를 설치하여 실수를 방지한다.
+	- 타일에 표시되는 **숫자**를 통해 벌레의 위치를 추론한다.
+	- 벌레가 있다고 판단되는 타일에는 **느낌표 마크**를 설치하여 실수를 방지한다.
 - 벌레가 있는 타일을 제외한 모든 안전한 칸을 개방하면 승리한다.
 
 ### 조작 방법
 - 마우스 왼쪽 클릭: 타일 개방
 - 마우스 오른쪽 클릭: 마크 설치 / 재클릭 시 제거
-- 메뉴 조작 (마우스 왼쪽 클릭):
-	- 소리 끄기 / 켜기
-	- 게임 종료
+- 메뉴 조작 (마우스 왼쪽 클릭)
  
 ### 규칙
 - 게임 화면에는 여러 개의 정사각형 타일로 구성된 격자가 존재한다.
@@ -32,7 +30,7 @@
 
 ### 시작 조건
 1. 게임 실행
-2. 벌레가 배치된 격자 랜덤 생성
+2. 타일 랜덤 생성
 3. 플레이어가 **첫 번째 타일을 클릭**하면서 게임이 시작된다.
 	- **첫 번째 클릭이 벌레가 되지 않도록 배치를 조정**
 
@@ -55,25 +53,22 @@
 	- 일부 상황에서는 논리적 추론만으로 해결할 수 없어, 확률적 판단이 필요하다.
 
 ### 화면 구성
-pptx 참조
 
 ### 진행 흐름
 ```text
-게임 실행
-   ↓
-난이도 선택
-   ↓
-새 게임 시작
-   ↓
-필드 및 지뢰 생성
-   ↓
-첫 번째 칸 클릭
-   ↓
-┌─────────────────┐
-│     칸 확인      │
-└────────┬────────┘
+	게임 실행
+	   ↓
+	난이도 선택
+	   ↓
+	새 게임 시작
+	   ↓
+	필드 및 지뢰 생성
+	   ↓
+	첫 번째 칸 클릭
+	   ↓
+	   칸 확인
          ↓
-    지뢰인가?
+	  지뢰인가?
     ↙       ↘
    YES       NO
     ↓         ↓
@@ -108,18 +103,38 @@ pptx 참조
 | `GameState` | 게임의 현재 상태를 나타내는 열거형 | `Playing`, `Win`, `Lose` | - |
 
 ### 이미지 목록
-- [x] 게임 로고
-- [x] 배경
-- [ ] 닫힌 타일
-- [ ] 열린(빈) 타일
-- [ ] 숫자 1~3
-- [ ] 벌레
-- [ ] 마크
-- [ ] 메뉴 버튼
+
+**Start Screen**
+- [x] StartBackground
+	- [x] TitleLogo
+	- [x] BgmToggle
+ 	- [x] NewGameButton
+		- [x] EasyButton
+		- [x] NormalButton
+		- [x] HardButton
+	- [x] HowToPlayButton
+	    - [x] HowToPlayExitButton
+	- [x] ExitButton
+
+**Play Screen**
+- [x] PlayBackground
+- [x] TileBackground
+- [x] TileOpen, TileClose
+- [x] Bug
+- [x] HomeButton
+- [x] DifficultyButton
+- [x] GuideButton
+- [x] ExitButton2
+
+**Lose Screen**
+- [x] LoseBackground
+- [x] RetryButton
+
+**Win Screen**
+- [x] WinBackground
 
 ### 사운드 목록
-- [x] BGM
-- [ ] 타일 개방
-- [ ] 마크 설치
-- [ ] 마크 제거
-- [ ] 벌레 발견
+- [x] BGM1, BGM2, BGM3, BGM4
+- [x] TileOpen
+- [x] MarkPlace / MarkRemove
+- [x] BugFound

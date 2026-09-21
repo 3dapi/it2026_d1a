@@ -27,6 +27,10 @@ class G2InputContext : IDisposable
 	private readonly byte[] _keyCur = new byte[MaxInputKey];
 	private readonly byte[] _keyOld = new byte[MaxInputKey];
 	private readonly InputState[] _keyMap = new InputState[MaxInputKey];
+	// 한 프레임 사이에 눌렀다 놓은 키도 Down/Up으로 전달합니다.
+	private readonly bool[] _pendingKeyDown = new bool[MaxInputKey];
+	private readonly bool[] _pendingKeyUp = new bool[MaxInputKey];
+	private readonly bool[] _eventKeyHeld = new bool[MaxInputKey];
 
 	private readonly byte[] _buttonCur = new byte[MaxInputButton];
 	private readonly byte[] _buttonOld = new byte[MaxInputButton];
@@ -63,6 +67,9 @@ class G2InputContext : IDisposable
 		}
 		_targetForm = form ?? throw new ArgumentNullException(nameof(form));
 		_targetForm.MouseWheel += OnMouseWheel;
+		_targetForm.KeyDown += OnKeyDown;
+		_targetForm.KeyUp += OnKeyUp;
+		_targetForm.Deactivate += OnDeactivate;
 		_mouseOldPosition = _mousePosition;
 		Instance = this;
 	}
@@ -85,6 +92,16 @@ class G2InputContext : IDisposable
 			{
 				_keyCur[i] = (_keyCur[i] & 0x80) != 0 ? (byte)1 : (byte)0;
 				_keyMap[i] = GetInputState(_keyOld[i], _keyCur[i]);
+				if (_pendingKeyDown[i])
+				{
+					_keyMap[i] = InputState.Down;
+					_pendingKeyDown[i] = false;
+				}
+				else if (_pendingKeyUp[i])
+				{
+					_keyMap[i] = InputState.Up;
+					_pendingKeyUp[i] = false;
+				}
 			}
 		}
 		else
@@ -149,6 +166,22 @@ class G2InputContext : IDisposable
 		_wheelAccumulated += e.Delta;
 	}
 
+	private void OnKeyDown(object? sender, KeyEventArgs e)
+	{
+		int index = GetKeyIndex(e.KeyCode);
+		if (!_eventKeyHeld[index]) _pendingKeyDown[index] = true;
+		_eventKeyHeld[index] = true;
+	}
+
+	private void OnKeyUp(object? sender, KeyEventArgs e)
+	{
+		int index = GetKeyIndex(e.KeyCode);
+		_pendingKeyUp[index] = true;
+		_eventKeyHeld[index] = false;
+	}
+
+	private void OnDeactivate(object? sender, EventArgs e) => Reset();
+
 	public bool IsKeyDown(Keys key)
 	{
 		return _keyMap[GetKeyIndex(key)] == InputState.Down;
@@ -194,6 +227,9 @@ class G2InputContext : IDisposable
 		Array.Clear(_keyCur, 0, MaxInputKey);
 		Array.Clear(_keyOld, 0, MaxInputKey);
 		Array.Clear(_keyMap, 0, MaxInputKey);
+		Array.Clear(_pendingKeyDown, 0, MaxInputKey);
+		Array.Clear(_pendingKeyUp, 0, MaxInputKey);
+		Array.Clear(_eventKeyHeld, 0, MaxInputKey);
 		Array.Clear(_buttonCur, 0, MaxInputButton);
 		Array.Clear(_buttonOld, 0, MaxInputButton);
 		Array.Clear(_buttonMap, 0, MaxInputButton);
@@ -225,6 +261,9 @@ class G2InputContext : IDisposable
 	public void Dispose()
 	{
 		_targetForm.MouseWheel -= OnMouseWheel;
+		_targetForm.KeyDown -= OnKeyDown;
+		_targetForm.KeyUp -= OnKeyUp;
+		_targetForm.Deactivate -= OnDeactivate;
 		Instance = null;
 	}
 }

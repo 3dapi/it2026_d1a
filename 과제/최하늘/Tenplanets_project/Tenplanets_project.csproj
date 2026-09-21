@@ -19,8 +19,6 @@
 
 	<ItemGroup>
 	  <Folder Include="resource\tex_effect\" />
-	  <Folder Include="resource\tex_planet\" />
-	  <Folder Include="resource\tex_ui\" />
 	</ItemGroup>
 
 	<!-- resource 폴더의 모든 파일을 실행 폴더로 복사 -->

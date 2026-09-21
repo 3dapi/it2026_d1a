@@ -4,6 +4,7 @@
 
 public static class GameGlobal
 {
-	public static readonly System.Drawing.Size ScreenSize = new(960, 640);
-	public static readonly string GameName = "Nemo .....";
+	public static readonly System.Drawing.Size ScreenSize = new(1200, 900);
+	public static readonly string GameName = "BrickOut";
 }
+

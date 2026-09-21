@@ -25,8 +25,12 @@ abstract class G2AppBase : IDisposable
 	public double DeltaTime { get; private set; }
 	public double TotalTime { get; private set; }
 
-	public float ScaleX => (float)_mainForm.ClientSize.Width / ScreenSize.Width;
-	public float ScaleY => (float)_mainForm.ClientSize.Height / ScreenSize.Height;
+	public float ScaleX => Math.Max(0.001f, Math.Min(
+		(float)_mainForm.ClientSize.Width / ScreenSize.Width,
+		(float)_mainForm.ClientSize.Height / ScreenSize.Height));
+	public float ScaleY => ScaleX;
+	public float ViewportOffsetX => (_mainForm.ClientSize.Width - ScreenSize.Width * ScaleX) / 2;
+	public float ViewportOffsetY => (_mainForm.ClientSize.Height - ScreenSize.Height * ScaleY) / 2;
 
 	public static float ScreenScaleX => Instance?.ScaleX ?? throw new InvalidOperationException("ScreenScaleX::G2AppBase instance is not initialized.");
 	public static float ScreenScaleY => Instance?.ScaleY ?? throw new InvalidOperationException("ScreenScaleY::G2AppBase instance is not initialized.");
@@ -138,7 +142,8 @@ abstract class G2AppBase : IDisposable
 	private void Render2D()
 	{
 		ID2D1HwndRenderTarget renderTarget = _graphics.RenderTarget;
-		renderTarget.Transform = System.Numerics.Matrix3x2.CreateScale(ScreenScaleX, ScreenScaleY);
+		renderTarget.Transform = System.Numerics.Matrix3x2.CreateScale(ScreenScaleX, ScreenScaleY)
+			* System.Numerics.Matrix3x2.CreateTranslation(ViewportOffsetX, ViewportOffsetY);
 		renderTarget.BeginDraw();
 		renderTarget.Clear(ClearColor);
 

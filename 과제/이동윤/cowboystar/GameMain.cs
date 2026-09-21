@@ -1,48 +1,43 @@
-﻿// -------------------------------------------------------------------------------------------------------------------------------------------------------------
-// Author: 3dapi (https://github.com/3dapi)
-// -------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-using Vortice.Mathematics;
+﻿using Vortice.Mathematics;
 
 class GameMain : G2AppBase
 {
-	public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
-	public override string GameName => GameGlobal.GameName;
+    public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
+    public override string GameName => GameGlobal.GameName;
+    private G2Texture? background;
+    private G2Texture? title;
+    private G2Texture? start;
 
-	protected override void Initialize()
-	{
-		//---------------------------------------
-		// 게임 관련 객체를 생성합니다.
-		//---------------------------------------
-	}
+    protected override void Initialize()
+    {
+        background = new G2Texture("resource/background/bg.png");
+        title = new G2Texture("resource/ui/title.png");
+        start = new G2Texture("resource/ui/start.png");
+    }
 
-	protected override void Update()
-	{
-		double elapsed = TotalTime;
+    protected override void Update()
+    {
+        // 내용
+    }
 
-		this.ClearColor = new Color4(
-			red: (float)(Math.Sin(elapsed) * 0.5 + 0.5),
-			green: (float)(Math.Sin(elapsed + Math.PI / 2.0) * 0.5 + 0.5),
-			blue: (float)(Math.Sin(elapsed + Math.PI) * 0.5 + 0.5),
-			alpha: 1.0f);
+    protected override void Render()
+    {
+        // 배경
+        background?.Draw();
 
-		//---------------------------------------
-		// 게임 관련 객체를 갱신합니다.
-		//---------------------------------------
-	}
+        // 제목
+        title?.Draw(400, 50);
 
-	protected override void Render()
-	{
-		//---------------------------------------
-		// 게임 관련 객체를 렌더링 합니다.
-		//---------------------------------------
-	}
+        // 시작하기
+        start?.Draw(800, 700);
+    }
 
-	public override void Dispose()
-	{
-		base.Dispose();
-		//---------------------------------------
-		// 게임 관련 객체를 해제합니다.
-		//---------------------------------------
-	}
+    public override void Dispose()
+    {
+        background?.Dispose();
+        title?.Dispose();
+        start?.Dispose();
+
+        base.Dispose();
+    }
 }
