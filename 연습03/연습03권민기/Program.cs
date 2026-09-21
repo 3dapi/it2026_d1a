@@ -5,56 +5,59 @@ namespace ProblemSet
     internal class Program
     {
         static void Main(string[] args)
-        {
-            // =========================================
-            // 09번: 태어난 연도로 띠 출력하기
-            // =========================================
+		{
+            if (false)
+            {
 
-            //Console.Write("태어난 연도를 입력하세요: ");
-            //int year = int.Parse(Console.ReadLine());
+                // =========================================
+                // 09번: 태어난 연도로 띠 출력하기
+                // =========================================
 
-            //switch (year % 12)
-            //{
-            //    case 0: Console.WriteLine("원숭이"); break;
-            //    case 1: Console.WriteLine("닭"); break;
-            //    case 2: Console.WriteLine("개"); break;
-            //    case 3: Console.WriteLine("돼지"); break;
-            //    case 4: Console.WriteLine("쥐"); break;
-            //    case 5: Console.WriteLine("소"); break;
-            //    case 6: Console.WriteLine("호랑이"); break;
-            //    case 7: Console.WriteLine("토끼"); break;
-            //    case 8: Console.WriteLine("용"); break;
-            //    case 9: Console.WriteLine("뱀"); break;
-            //    case 10: Console.WriteLine("말"); break;
-            //    case 11: Console.WriteLine("양"); break;
-            //}
-            //Console.WriteLine();
+                Console.Write("태어난 연도를 입력하세요: ");
+                int year = int.Parse(Console.ReadLine());
 
+                var result = (year % 12) switch
+                {
+                    0 => "원숭이",
+                    1 => "닭",
+                    2 => "개",
+                    3 => "돼지",
+                    4 => "쥐",
+                    5 => "소",
+                    6 => "호랑이",
+                    7 => "토끼",
+                    8 => "용",
+                    9 => "뱀",
+                    10 => "말",
+                    11 => "양",
+                    _ => "알 수 없음"
+                };
+                Console.WriteLine(result);
+            }
 
             // =========================================
             // 10번: 현재 월을 입력받아 계절 출력하기
             // =========================================
 
-            //Console.Write("월을 입력하세요 (1~12): ");
-            //int month = int.Parse(Console.ReadLine());
+            Console.Write("월을 입력하세요 (1~12): ");
+            int month = int.Parse(Console.ReadLine());
 
-            //if (month >= 3 && month <= 5)
-            //{
-            //    Console.WriteLine("봄");
-            //}
-            //else if (month >= 6 && month <= 8)
-            //{
-            //    Console.WriteLine("여름");
-            //}
-            //else if (month >= 9 && month <= 11)
-            //{
-            //    Console.WriteLine("가을");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("겨울");
-            //}
-            //Console.WriteLine();
+            switch (month)
+            {
+                case >=3 and <= 5:
+                    Console.WriteLine("봄");
+                    break;
+                case >=6 and <= 8:
+                    Console.WriteLine("여름");
+                    break;
+                case >=9 and <= 11:
+                    Console.WriteLine("가을");
+                    break;
+                default:
+                    Console.WriteLine("겨울");
+                    break;
+            }
+            Console.WriteLine();
 
 
             // =========================================
