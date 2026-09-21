@@ -1,0 +1,100 @@
+﻿using Vortice.Direct2D1;
+using Vortice.DirectWrite;
+using Vortice.Mathematics;
+
+class GameMain : G2AppBase
+{
+    public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
+    public override string GameName => GameGlobal.GameName;
+
+    G2Texture background = null!;
+    G2Texture runner = null!;
+    G2Texture jumper = null!;
+    G2Font title = null!;
+    G2Font buttonFont = null!;
+    ID2D1SolidColorBrush black = null!;
+    ID2D1SolidColorBrush white = null!;
+    RectangleF startButton = new RectangleF(420, 350, 440, 82);
+    RectangleF exitButton = new RectangleF(420, 454, 440, 82);
+    G2AudioSound? selectSound;
+    int selectedButton = 0; // 0: 선택 없음, 1: 시작, 2: 나가기
+
+    protected override void Initialize()
+    {
+        if (G2AudioContext.Instance?.Audio != null)
+        {
+            selectSound = new G2AudioSound("resource/sound/select.wav");
+        }
+        ClearColor = new Color4(1, 1, 1, 1);
+        background = new G2Texture("resource/menu/background.png");
+        runner = new G2Texture("resource/menu/run 3.png");
+        jumper = new G2Texture("resource/menu/jump.png");
+        title = new G2Font("맑은 고딕", 52, FontWeight.Bold,
+            Vortice.DirectWrite.FontStyle.Normal, TextAlignment.Center, ParagraphAlignment.Center);
+        buttonFont = new G2Font("맑은 고딕", 36, FontWeight.Bold,
+            Vortice.DirectWrite.FontStyle.Normal, TextAlignment.Center, ParagraphAlignment.Center);
+        black = RenderTarget.CreateSolidColorBrush(new Color4(0, 0, 0, 1));
+        white = RenderTarget.CreateSolidColorBrush(new Color4(1, 1, 1, 1));
+    }
+
+    protected override void Update()
+    {
+        // 숫자 1을 누르면 시작 버튼을 선택합니다.
+        // 게임 시작 기능은 아직 넣지 않습니다.
+        if (Input.IsKeyDown(Keys.D1) || Input.IsKeyDown(Keys.NumPad1))
+        {
+            selectedButton = 1;
+            selectSound?.Play();
+        }
+        else if (Input.IsKeyDown(Keys.D2) || Input.IsKeyDown(Keys.NumPad2))
+        {
+            if (selectedButton == 2)
+            {
+                Close(); // 나가기가 선택된 상태에서 다시 누르면 종료합니다.
+            }
+            else
+            {
+                selectedButton = 2;
+                selectSound?.Play();
+            }
+        }
+    }
+    protected override void Render()
+    {
+        background.Draw(new Rect(0, 355, 1280, 360), new Rect(0, 0, 1669, 942));
+        RenderTarget.FillRectangle(new Rect(48, 240, 282, 300), white);
+        runner.Draw(new Rect(60, 260, 256, 256), new Rect(0, 0, 256, 256), 1, BitmapInterpolationMode.NearestNeighbor);
+        RenderTarget.FillRectangle(new Rect(942, 48, 270, 270), white);
+        jumper.Draw(new Rect(948, 52, 256, 256), new Rect(0, 0, 256, 256), 1, BitmapInterpolationMode.NearestNeighbor);
+        RenderTarget.FillRectangle(new Rect(374, 102, 540, 512), black);
+        RenderTarget.FillRectangle(new Rect(366, 94, 540, 512), white);
+        RenderTarget.DrawRectangle(new Rect(366, 94, 540, 512), black, 4);
+        title.DrawText("장애물 달리기!", new Rect(388, 155, 496, 108), new Color4(0, 0, 0, 1));
+        DrawButton(startButton, "게임 시작", selectedButton == 1);
+        DrawButton(exitButton, "나가기", selectedButton == 2);
+    }
+
+    void DrawButton(RectangleF box, string text, bool selected)
+    {
+        Rect area = new Rect(box.X, box.Y, box.Width, box.Height);
+        RenderTarget.FillRectangle(area, selected ? black : white);
+        RenderTarget.DrawRectangle(area, black, 3);
+        Color4 textColor = selected ? new Color4(1, 1, 1, 1) : new Color4(0, 0, 0, 1);
+        buttonFont.DrawText(text, area, textColor);
+    }
+
+    public override void Dispose()
+    {
+        selectSound?.Dispose();
+        background?.Dispose();
+        runner?.Dispose();
+        jumper?.Dispose();
+        title?.Dispose();
+        buttonFont?.Dispose();
+        black?.Dispose();
+        white?.Dispose();
+        base.Dispose();
+    }
+}
+
+

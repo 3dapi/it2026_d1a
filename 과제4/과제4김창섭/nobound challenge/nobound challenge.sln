@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37614.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nobound challenge", "nobound challenge.csproj", "{D9495AB1-0851-4840-A887-40A7B6F83A44}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9495AB1-0851-4840-A887-40A7B6F83A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9495AB1-0851-4840-A887-40A7B6F83A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9495AB1-0851-4840-A887-40A7B6F83A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9495AB1-0851-4840-A887-40A7B6F83A44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5BB3926-F8A2-46B9-B0C3-A255CA28059D}
+	EndGlobalSection
+EndGlobal

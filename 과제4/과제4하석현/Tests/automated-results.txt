@@ -1,0 +1,118 @@
+﻿Scruple automated verification / 2026-09-20 00:12
+PASS  달빛 회랑: all walkable tiles reachable with shortcut closed
+PASS  달빛 회랑: at least one cycle / bypass exists
+PASS  달빛 회랑: memory reachable
+PASS  달빛 회랑: switch reachable
+PASS  달빛 회랑: shortcut reduces route (15 -> 13)
+PASS  달빛 회랑: portal reachable -> 마지막 종탑
+PASS  arrival is valid -> 마지막 종탑
+PASS  달빛 회랑: portal reachable -> 잠긴 서고
+PASS  arrival is valid -> 잠긴 서고
+PASS  달빛 회랑: portal reachable -> 새벽의 문턱
+PASS  arrival is valid -> 새벽의 문턱
+PASS  달빛 회랑: patrol leg 0
+PASS  달빛 회랑: patrol leg 1
+PASS  달빛 회랑: patrol leg 2
+PASS  달빛 회랑: patrol leg 3
+PASS  달빛 회랑: 4000 randomized moves stay inside collision geometry
+PASS  잠긴 서고: all walkable tiles reachable with shortcut closed
+PASS  잠긴 서고: at least one cycle / bypass exists
+PASS  잠긴 서고: memory reachable
+PASS  잠긴 서고: switch reachable
+PASS  잠긴 서고: shortcut reduces route (25 -> 13)
+PASS  잠긴 서고: portal reachable -> 달빛 회랑
+PASS  arrival is valid -> 달빛 회랑
+PASS  잠긴 서고: portal reachable -> 침묵의 정원
+PASS  arrival is valid -> 침묵의 정원
+PASS  잠긴 서고: portal reachable -> 새벽의 문턱
+PASS  arrival is valid -> 새벽의 문턱
+PASS  잠긴 서고: patrol leg 0
+PASS  잠긴 서고: patrol leg 1
+PASS  잠긴 서고: patrol leg 2
+PASS  잠긴 서고: patrol leg 3
+PASS  잠긴 서고: 4000 randomized moves stay inside collision geometry
+PASS  침묵의 정원: all walkable tiles reachable with shortcut closed
+PASS  침묵의 정원: at least one cycle / bypass exists
+PASS  침묵의 정원: memory reachable
+PASS  침묵의 정원: switch reachable
+PASS  침묵의 정원: shortcut reduces route (23 -> 13)
+PASS  침묵의 정원: portal reachable -> 잠긴 서고
+PASS  arrival is valid -> 잠긴 서고
+PASS  침묵의 정원: portal reachable -> 마지막 종탑
+PASS  arrival is valid -> 마지막 종탑
+PASS  침묵의 정원: portal reachable -> 새벽의 문턱
+PASS  arrival is valid -> 새벽의 문턱
+PASS  침묵의 정원: patrol leg 0
+PASS  침묵의 정원: patrol leg 1
+PASS  침묵의 정원: patrol leg 2
+PASS  침묵의 정원: patrol leg 3
+PASS  침묵의 정원: patrol leg 0
+PASS  침묵의 정원: patrol leg 1
+PASS  침묵의 정원: patrol leg 2
+PASS  침묵의 정원: patrol leg 3
+PASS  침묵의 정원: 4000 randomized moves stay inside collision geometry
+PASS  마지막 종탑: all walkable tiles reachable with shortcut closed
+PASS  마지막 종탑: at least one cycle / bypass exists
+PASS  마지막 종탑: memory reachable
+PASS  마지막 종탑: switch reachable
+PASS  마지막 종탑: shortcut reduces route (15 -> 13)
+PASS  마지막 종탑: portal reachable -> 침묵의 정원
+PASS  arrival is valid -> 침묵의 정원
+PASS  마지막 종탑: portal reachable -> 달빛 회랑
+PASS  arrival is valid -> 달빛 회랑
+PASS  마지막 종탑: portal reachable -> 새벽의 문턱
+PASS  arrival is valid -> 새벽의 문턱
+PASS  마지막 종탑: patrol leg 0
+PASS  마지막 종탑: patrol leg 1
+PASS  마지막 종탑: patrol leg 2
+PASS  마지막 종탑: patrol leg 3
+PASS  마지막 종탑: patrol leg 0
+PASS  마지막 종탑: patrol leg 1
+PASS  마지막 종탑: patrol leg 2
+PASS  마지막 종탑: patrol leg 3
+PASS  마지막 종탑: 4000 randomized moves stay inside collision geometry
+PASS  새벽의 문턱: all walkable tiles reachable with shortcut closed
+PASS  새벽의 문턱: at least one cycle / bypass exists
+PASS  새벽의 문턱: portal reachable -> 달빛 회랑
+PASS  arrival is valid -> 달빛 회랑
+PASS  새벽의 문턱: portal reachable -> 잠긴 서고
+PASS  arrival is valid -> 잠긴 서고
+PASS  새벽의 문턱: portal reachable -> 침묵의 정원
+PASS  arrival is valid -> 침묵의 정원
+PASS  새벽의 문턱: portal reachable -> 마지막 종탑
+PASS  arrival is valid -> 마지막 종탑
+PASS  새벽의 문턱: 4000 randomized moves stay inside collision geometry
+PASS  LOS sees along corridor
+PASS  LOS blocked around corner
+PASS  large dt does not tunnel through wall
+PASS  monster enters notice with signal
+PASS  notice gives reaction time without movement
+PASS  notice transitions to chase
+PASS  losing sight transitions to search
+PASS  hidden player does not update last seen position
+PASS  search returns to patrol
+PASS  monster navigation remains on floor
+PASS  pause freezes player and monsters
+PASS  focus loss pauses play
+PASS  movement consistent at 60 and 120 Hz
+PASS  memory collected and dialogue opened
+PASS  retry restores exact area-entry snapshot
+PASS  incomplete memories require explicit choice
+PASS  explicit incomplete ending reachable
+PASS  four memories unlock true ending
+PASS  true ending reaches dawn
+PASS  contact triggers caught ending
+PASS  retry grants temporary entry protection
+PASS  MCI music channel reports playing
+PASS  MCI effect reports playing: click
+PASS  MCI effect reports playing: memory
+PASS  MCI effect reports playing: door
+PASS  MCI effect reports playing: alert
+PASS  MCI effect reports playing: fail
+PASS  MCI effect reports playing: pulse
+PASS  mute stops effects
+PASS  ending track transition opens playback
+PASS  MCI commands complete without errors
+PASS  held E repeats do not skip a second dialogue page
+PASS  release and repress E advances dialogue normally
+TOTAL: 0 failures
