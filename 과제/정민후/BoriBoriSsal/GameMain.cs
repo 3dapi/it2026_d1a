@@ -17,6 +17,18 @@ class GameMain : G2AppBase
 	private const float InitialMarkerSpeed = 250.0f;
 	private const float MarkerSpeedIncrease = 28.0f;
 	private const float MaximumMarkerSpeed = 760.0f;
+	private const float StartButtonLeft = 330.0f;
+	private const float StartButtonTop = 340.0f;
+	private const float StartButtonWidth = 300.0f;
+	private const float StartButtonHeight = 104.0f;
+	private const float ExitButtonLeft = 370.0f;
+	private const float ExitButtonTop = 455.0f;
+	private const float ExitButtonWidth = 220.0f;
+	private const float ExitButtonHeight = 58.0f;
+	private const float RetryButtonLeft = 345.0f;
+	private const float RetryButtonTop = 285.0f;
+	private const float RetryButtonWidth = 270.0f;
+	private const float RetryButtonHeight = 70.0f;
 
 	private GameState _state = GameState.Title;
 	private int _stage = 1;
@@ -37,6 +49,8 @@ class GameMain : G2AppBase
 	private G2Texture? _gameOverScene;
 	private G2Font? _numberFont;
 	private G2Font? _smallNumberFont;
+	private G2AudioMp3? _stageClearSound;
+	private G2AudioMp3? _gameOverSound;
 
 	public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
 	public override string GameName => GameGlobal.GameName;
@@ -52,6 +66,8 @@ class GameMain : G2AppBase
 
 		_numberFont = CreateFont(30);
 		_smallNumberFont = CreateFont(22);
+		_stageClearSound = new G2AudioMp3("resource/sound/stage_clear.mp3");
+		_gameOverSound = new G2AudioMp3("resource/sound/game_over.mp3");
 	}
 
 	private void LoadTitleResources()
@@ -88,9 +104,15 @@ class GameMain : G2AppBase
 		switch (_state)
 		{
 			case GameState.Title:
-				if (Input.IsKeyDown(Keys.Space))
+				if (Input.IsKeyDown(Keys.Space) || IsLeftButtonClickedInside(
+					StartButtonLeft, StartButtonTop, StartButtonWidth, StartButtonHeight))
 				{
 					StartGame();
+				}
+				else if (IsLeftButtonClickedInside(
+					ExitButtonLeft, ExitButtonTop, ExitButtonWidth, ExitButtonHeight))
+				{
+					Close();
 				}
 				break;
 			case GameState.FirstBori:
@@ -122,7 +144,10 @@ class GameMain : G2AppBase
 				}
 				break;
 			case GameState.GameOver:
-				if (Input.IsKeyDown(Keys.Space) || Input.IsKeyDown(Keys.Enter))
+				if (Input.IsKeyDown(Keys.Space) ||
+					Input.IsKeyDown(Keys.Enter) ||
+					IsLeftButtonClickedInside(
+						RetryButtonLeft, RetryButtonTop, RetryButtonWidth, RetryButtonHeight))
 				{
 					StartGame();
 				}
@@ -130,8 +155,23 @@ class GameMain : G2AppBase
 		}
 	}
 
+	private bool IsLeftButtonClickedInside(float left, float top, float width, float height)
+	{
+		if (!Input.IsButtonDown(MouseButtons.Left))
+		{
+			return false;
+		}
+
+		System.Drawing.PointF mouse = Input.MousePosition;
+		return mouse.X >= left &&
+			mouse.X <= left + width &&
+			mouse.Y >= top &&
+			mouse.Y <= top + height;
+	}
+
 	private void StartGame()
 	{
+		_gameOverSound?.Stop();
 		_stage = 1;
 		ChangeState(GameState.FirstBori);
 	}
@@ -177,6 +217,8 @@ class GameMain : G2AppBase
 		bool cleared = _markerPosition >= ClearStart && _markerPosition <= ClearStart + ClearWidth;
 		if (!cleared)
 		{
+			_stageClearSound?.Stop();
+			_gameOverSound?.Play(false);
 			ChangeState(GameState.GameOver);
 			return;
 		}
@@ -186,6 +228,7 @@ class GameMain : G2AppBase
 			_bestStage = _stage;
 			SaveBestStage();
 		}
+		_stageClearSound?.Play(false);
 		ChangeState(GameState.Success);
 	}
 
@@ -228,8 +271,12 @@ class GameMain : G2AppBase
 	private void RenderTitle()
 	{
 		_titleLogo?.Draw(new Rect(165, 75, 630, 217), new Rect(0, 0, 2137, 736));
-		_titleStartButton?.Draw(new Rect(330, 340, 300, 104), new Rect(0, 0, 2126, 740));
-		_titleExitButton?.Draw(new Rect(370, 455, 220, 58), new Rect(0, 0, 1845, 490));
+		_titleStartButton?.Draw(
+			new Rect(StartButtonLeft, StartButtonTop, StartButtonWidth, StartButtonHeight),
+			new Rect(0, 0, 2126, 740));
+		_titleExitButton?.Draw(
+			new Rect(ExitButtonLeft, ExitButtonTop, ExitButtonWidth, ExitButtonHeight),
+			new Rect(0, 0, 1845, 490));
 		_titleBestScore?.Draw(new Rect(350, 540, 260, 90), new Rect(0, 0, 2129, 739));
 		_smallNumberFont?.DrawText(_bestStage.ToString(), new Rect(474, 560, 36, 40), new Color4(1.0f, 0.72f, 0.06f, 1.0f));
 	}
@@ -311,6 +358,8 @@ class GameMain : G2AppBase
 
 	public override void Dispose()
 	{
+		_gameOverSound?.Dispose();
+		_stageClearSound?.Dispose();
 		_smallNumberFont?.Dispose();
 		_numberFont?.Dispose();
 		_gameOverScene?.Dispose();

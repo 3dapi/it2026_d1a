@@ -2,20 +2,45 @@
 // Author: 3dapi (https://github.com/3dapi)
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+using Vortice.Mathematics;
+
 class GameMain : G2AppBase
 {
 	public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
 	public override string GameName => GameGlobal.GameName;
-	private readonly GameSession _session = new();
-	private GameScene? _scene;
+
+	private G2Texture? _titleImage;
+	private G2Texture? _floorImage;
+	private G2Texture? _doorImage;
+	private G2Texture? _leftHandImage;
+	private G2Texture? _rightHandImage;
+	private G2Font? _font;
+	private G2AudioSound? _titleBgm;
+	private G2AudioSound? _enterSound;
+	private G2AudioSound? _caveBgm;
+	private Form? _window;
+	private bool _startRequested = false;
+	private bool _gameStarted = false;
 
 	protected override void Initialize()
 	{
 		//---------------------------------------
 		// 게임 관련 객체를 생성합니다.
 		//---------------------------------------
-		_scene = new GameScene(_session);
-		_scene.Initialize();
+		_titleImage = new G2Texture("resource/main.png");
+		_floorImage = new G2Texture("resource/firstfloor.png");
+		_doorImage = new G2Texture("resource/door_closed.png");
+		_leftHandImage = new G2Texture("resource/leftidle.png");
+		_rightHandImage = new G2Texture("resource/rightidle.png");
+		_font = new G2Font("Malgun Gothic", 32);
+
+		_titleBgm = new G2AudioSound("resource/audio/Simple_Lofi_Piano_Loop.wav");
+		_enterSound = new G2AudioSound("resource/audio/Piano_Ui (1).wav");
+		_caveBgm = new G2AudioSound("resource/audio/Cave.wav");
+		_titleBgm.Play(true); // 시작 화면 배경음 반복 재생
+
+		_window = Control.FromHandle(RenderTarget.Hwnd) as Form;
+		if (_window != null) _window.KeyDown += OnKeyDown;
 	}
 
 	protected override void Update()
@@ -23,35 +48,19 @@ class GameMain : G2AppBase
 		//---------------------------------------
 		// 게임 관련 객체를 갱신합니다.
 		//---------------------------------------
-		// 다른 창을 사용하는 동안 게임 입력과 진행을 멈춥니다.
-		if (Form.ActiveForm == null) return;
-
-		bool alt = Input.KeyState(Keys.Menu) is
-			G2InputContext.InputState.Down or G2InputContext.InputState.Press;
-		// Alt+Enter는 교수님 프레임워크의 전체 화면 전환에만 사용합니다.
-		bool confirm = Input.IsKeyDown(Keys.Enter) && !alt;
-		_session.Update(Math.Min(DeltaTime, 0.1));
-		if (Input.IsKeyDown(Keys.Escape))
+		if (_startRequested)
 		{
-			_session.ReturnToTitle();
-			return;
+			_gameStarted = true;
+			_startRequested = false;
+			_titleBgm?.Stop();
+			_enterSound?.Play(); // 진입 효과음은 한 번만 재생
+			_caveBgm?.Play(true); // 탑 내부 배경음 반복 재생
 		}
+	}
 
-		switch (_session.Phase)
-		{
-			case GamePhase.Title:
-				if (confirm) _session.Start();
-				break;
-			case GamePhase.Playing:
-				if (Input.IsKeyDown(Keys.A)) _session.Select(DoorSide.Left);
-				if (Input.IsKeyDown(Keys.D)) _session.Select(DoorSide.Right);
-				if (confirm) _session.Confirm();
-				break;
-			case GamePhase.Clear:
-			case GamePhase.GameOver:
-				if (confirm || Input.IsKeyDown(Keys.R)) _session.Start();
-				break;
-		}
+	private void OnKeyDown(object? sender, KeyEventArgs e)
+	{
+		if (!_gameStarted && e.KeyCode == Keys.Enter && !e.Alt) _startRequested = true;
 	}
 
 	protected override void Render()
@@ -59,7 +68,22 @@ class GameMain : G2AppBase
 		//---------------------------------------
 		// 게임 관련 객체를 렌더링 합니다.
 		//---------------------------------------
-		_scene?.Render();
+		Color4 textColor = new(1, 1, 1, 1);
+		if (!_gameStarted)
+		{
+			_titleImage?.Draw();
+			_font?.DrawText("Go to Top - 탑 오르기", new Rect(410, 90, 600, 60), textColor);
+			_font?.DrawText("Enter 키를 눌러 시작", new Rect(430, 560, 500, 60), textColor);
+			return;
+		}
+
+		// 배경 → 문 두 개 → 양손 → 현재 층 순서
+		_floorImage?.Draw();
+		_doorImage?.Draw(new Rect(303, 135, 250, 350), new Rect(0, 0, 304, 423));
+		_doorImage?.Draw(new Rect(617, 135, 250, 350), new Rect(0, 0, 304, 423));
+		_leftHandImage?.Draw(new Rect(0, 359, 450, 300), new Rect(0, 0, 1075, 717));
+		_rightHandImage?.Draw(new Rect(720, 359, 450, 300), new Rect(0, 0, 1075, 717));
+		_font?.DrawText("1층", new Rect(550, 30, 150, 60), textColor);
 	}
 
 	public override void Dispose()
@@ -67,8 +91,16 @@ class GameMain : G2AppBase
 		//---------------------------------------
 		// 게임 관련 객체를 해제합니다.
 		//---------------------------------------
-		_scene?.Dispose();
-		_scene = null;
+		if (_window != null) _window.KeyDown -= OnKeyDown;
+		_titleImage?.Dispose();
+		_floorImage?.Dispose();
+		_doorImage?.Dispose();
+		_leftHandImage?.Dispose();
+		_rightHandImage?.Dispose();
+		_font?.Dispose();
+		_titleBgm?.Dispose();
+		_enterSound?.Dispose();
+		_caveBgm?.Dispose();
 		base.Dispose();
 	}
 }

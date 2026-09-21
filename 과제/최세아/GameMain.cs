@@ -18,6 +18,12 @@ class GameMain : G2AppBase
     private G2Texture _Gameend = null;
     private G2Texture _Pool = null;
 
+    private G2AudioMp3? bgm;
+    private G2AudioMp3? game;
+    private G2AudioSound? clickSound;
+
+    private bool _waitingForExit = false;
+
     private enum GameState
     {
         Start,
@@ -34,18 +40,62 @@ class GameMain : G2AppBase
         // 게임 관련 객체를 생성합니다.
         //---------------------------------------
 
-        _Wallpaper = new G2Texture("resource/tex_play/ui_wallpaper.png");
-        _hg = new G2Texture("resource/tex_play/ui_bg.png");
-        _Start = new G2Texture("resource/tex_play/ui_Start.png");
-        _Snakemein = new G2Texture("resource/tex_play/ui_Snake.png");
-        _Gameend = new G2Texture("resource/tex_play/ui_gameend.png");
-        _Pool = new G2Texture("resource/tex_play/ui_pool.png");
+        string imageFolder = Path.Combine(
+            AppContext.BaseDirectory,
+            "resource",
+            "tex_play"
+            );
+
+
+        _Wallpaper = new G2Texture(Path.Combine(imageFolder, "ui_wallpaper.png")
+        );
+
+        _hg = new G2Texture(Path.Combine(imageFolder, "ui_bg.png")
+        );
+
+        _Start = new G2Texture(Path.Combine(imageFolder, "ui_Start.png")
+        );
+
+        _Snakemein = new G2Texture(Path.Combine(imageFolder, "ui_Snake.png")
+        );
+
+        _Gameend = new G2Texture(Path.Combine(imageFolder, "ui_gameend.png")
+        );
+
+        _Pool = new G2Texture(Path.Combine(imageFolder, "ui_pool.png")
+        );
+
+
+        // 오디오
+
+
+        string audioFolder = Path.Combine(
+            AppContext.BaseDirectory,
+            "resource",
+            "audio"
+        );
+
+        bgm = new G2AudioMp3(
+            Path.Combine(audioFolder, "bgm.mp3")
+        );
+
+        clickSound = new G2AudioSound(
+             Path.Combine(audioFolder, "click.wav")
+        );
+
+
+       game = new G2AudioMp3(
+            Path.Combine(audioFolder, "game.mp3")
+        );
+
+        bgm.Play(true);
+
     }
-    
 
-	
 
-	protected override void Update()
+
+
+    protected override void Update()
 	{
 		double elapsed = TotalTime;
 
@@ -54,6 +104,16 @@ class GameMain : G2AppBase
 			green: (float)(Math.Sin(elapsed + Math.PI / 2.0) * 0.5 + 0.5),
 			blue: (float)(Math.Sin(elapsed + Math.PI) * 0.5 + 0.5),
 		alpha: 1.0f);
+
+        if (_waitingForExit)
+        {
+            if (clickSound == null || !clickSound.IsPlaying())
+            {
+                Close();
+            }
+
+            return;
+        }
 
         //---------------------------------------
         // 게임 관련 객체를 갱신합니다.
@@ -71,10 +131,16 @@ class GameMain : G2AppBase
                 if (startButton.Contains(mouse))
                 {
                     _state = GameState.Playing;
+                    clickSound?.Play();
+                    game?.Play(true);
+                    bgm?.Stop();
                 }
                 else if (exitButton.Contains(mouse))
                 {
-                    Close();
+                    clickSound?.Play();
+                        bgm?.Stop();
+
+    _waitingForExit = true;
                     return;
                 }
             }

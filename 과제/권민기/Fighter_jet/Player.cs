@@ -27,7 +27,7 @@ namespace PlaneSurvivor
 
         // ---- 자동 발사 (기획서 3번: 조작 방법) ----
         private float _fireCooldown;
-        private const float FireInterval = 0.25f;
+        private const float FireInterval = 0.5f;
 
         /// <summary>총알 발사 시 (총구 x, y) 좌표와 함께 알림. SceneMain에서 구독해 Bullet 생성.</summary>
         public event Action<float, float>? OnFireBullet;

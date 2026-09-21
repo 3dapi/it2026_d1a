@@ -7,13 +7,14 @@ using Vortice.Mathematics;
 using System.Windows.Forms;
 class GameMain : G2AppBase
 {
-	public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
-	public override string GameName => GameGlobal.GameName;
+    public override System.Drawing.Size ScreenSize => GameGlobal.ScreenSize;
+    public override string GameName => GameGlobal.GameName;
 
     private enum GameScene
     {
         Start,
-        Play
+        Play,
+        Result
     }
 
     private GameScene _currentScene = GameScene.Start;
@@ -29,7 +30,7 @@ class GameMain : G2AppBase
     // 시작 버튼
     private G2Texture _startButtonNormalTexture = null!;
     private G2Texture _startButtonPressedTexture = null!;
-    private bool _isMouseOnStartButton = false; 
+    private bool _isMouseOnStartButton = false;
 
 
     // 종료 버튼
@@ -45,17 +46,26 @@ class GameMain : G2AppBase
     private G2Font _text = null;
     private string _mousePositionText = string.Empty;
 
-    protected override void Initialize()
-	{
-		//---------------------------------------
-		// 게임 관련 객체를 생성합니다.
-		//---------------------------------------
-		var texBackgroundDir = "resource\\background\\";
-		var texCharacterDir = "resource\\character\\";
-		var texUIDir = "resource\\ui\\";
-		var texWeaponDir = "resource\\weapon\\";
+    //사운드
+    private G2AudioSound _bgm = null;
+    private G2AudioSound _buttonClickSound = null!;
+    private G2AudioSound _cylinderSpinSound = null;
 
-		//배경 설정
+    protected override void Initialize()
+    {
+        //---------------------------------------
+        // 게임 관련 객체를 생성합니다.
+        //---------------------------------------
+        var texBackgroundDir = "resource\\background\\";
+        var texCharacterDir = "resource\\character\\";
+        var texUIDir = "resource\\ui\\";
+        var texWeaponDir = "resource\\weapon\\";
+
+        var audioBgmDir = "resource\\audio\\bgm\\";
+        var audioSfxDir = "resource\\audio\\sfx\\";
+        
+
+        //배경 설정
         _bgTexture = new G2Texture(texBackgroundDir + "room_background.png");
         _bgDarkTexture = new G2Texture(texBackgroundDir + "room_background_dark.png");
 
@@ -63,7 +73,7 @@ class GameMain : G2AppBase
         _titleTexture = new G2Texture(texUIDir + "title.png");
 
         //시작 버튼 
-        _startButtonNormalTexture =  new G2Texture(texUIDir + "button_start_normal.png");
+        _startButtonNormalTexture = new G2Texture(texUIDir + "button_start_normal.png");
         _startButtonPressedTexture = new G2Texture(texUIDir + "button_start_pressed.png");
 
         //종료 버튼
@@ -75,6 +85,15 @@ class GameMain : G2AppBase
         _gunTexture = new G2Texture(texWeaponDir + "revolver_normal.png");
 
         _text = new G2Font("Arial", 18);
+
+        //사운드 설정
+        _bgm = new G2AudioSound(audioBgmDir + "longnoteone.wav");
+        _buttonClickSound = new G2AudioSound(audioSfxDir + "button_click.wav");
+        _cylinderSpinSound = new G2AudioSound(audioSfxDir + "cylinder_spin.wav");
+
+        _bgm.Play(true);
+
+
 
     }
 
@@ -88,7 +107,7 @@ class GameMain : G2AppBase
         if (_currentScene == GameScene.Start)
         {
             //시작 버튼 영역에서 위에 마우스 있는 지 여부 확인
-            _isMouseOnStartButton = mousePos.X >= 240 && mousePos.X <= 407 && 
+            _isMouseOnStartButton = mousePos.X >= 240 && mousePos.X <= 407 &&
                                    mousePos.Y >= 415 && mousePos.Y <= 484;
 
             //종료 버튼 영역에서 위에 마우스 있는 지 여부 확인
@@ -98,11 +117,14 @@ class GameMain : G2AppBase
             //시작 버튼 입력
             if (_isMouseOnStartButton && Input.IsButtonDown(MouseButtons.Left))
             {
+                _buttonClickSound.Play();
                 _currentScene = GameScene.Play;
+                _cylinderSpinSound.Play();
             }
             //종료 버튼 입력
             if (_isMouseOnExitButton && Input.IsButtonDown(MouseButtons.Left))
             {
+                _buttonClickSound.Play();
                 Close();
             }
         }
@@ -112,7 +134,7 @@ class GameMain : G2AppBase
     }
 
     protected override void Render()
-	{
+    {
         //---------------------------------------
         // 게임 관련 객체를 렌더링 합니다.
         //---------------------------------------
@@ -128,16 +150,16 @@ class GameMain : G2AppBase
         }
 
         //마우스 위치 출력
-        _text.DrawText( _mousePositionText, new Rect(20, 20, 600, 100), new Color4(1.0f, 1.0f, 0.0f, 1.0f)
+        _text.DrawText(_mousePositionText, new Rect(20, 20, 600, 100), new Color4(1.0f, 1.0f, 0.0f, 1.0f)
     );
 
 
     }
 
-	public override void Dispose()
-	{
+    public override void Dispose()
+    {
 
-		//---------------------------------------
+        //---------------------------------------
         // 게임 관련 객체를 해제합니다.
         //---------------------------------------
 
@@ -163,8 +185,13 @@ class GameMain : G2AppBase
         //임시 텍스트
         _text.Dispose();
 
+        //사운드
+        _bgm.Dispose();
+        _buttonClickSound.Dispose();
+        _cylinderSpinSound.Dispose();
+
         base.Dispose();
-       
+
     }
 
 
@@ -201,6 +228,6 @@ class GameMain : G2AppBase
     {
         _bgTexture.Draw();
         _enemyTexture.Draw(280, 110);
-        _gunTexture.Draw(560, 350);
+        _gunTexture.Draw(610, 350);
     }
 }

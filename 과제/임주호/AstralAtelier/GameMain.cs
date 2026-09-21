@@ -10,6 +10,7 @@ internal sealed class GameMain : G2AppBase
 
     private readonly SceneTitle _titleScene = new();
     private readonly SceneBattle _battleScene = new();
+    private readonly BgmManager _bgm = new();
 
     private GameScene _currentScene = GameScene.Title;
 
@@ -26,6 +27,7 @@ internal sealed class GameMain : G2AppBase
 
         _titleScene.Initialize();
         _battleScene.Initialize();
+        _bgm.Play(BgmTrack.Title);
     }
 
     protected override void Update()
@@ -36,7 +38,7 @@ internal sealed class GameMain : G2AppBase
 
             if (action == TitleAction.StartGame)
             {
-                _currentScene = GameScene.Battle;
+                ChangeScene(GameScene.Battle);
             }
             else if (action == TitleAction.ExitGame)
             {
@@ -49,7 +51,7 @@ internal sealed class GameMain : G2AppBase
 
             if (returnToTitle)
             {
-                _currentScene = GameScene.Title;
+                ChangeScene(GameScene.Title);
             }
         }
     }
@@ -66,8 +68,25 @@ internal sealed class GameMain : G2AppBase
         }
     }
 
+    private void ChangeScene(GameScene nextScene)
+    {
+        if (_currentScene == nextScene)
+        {
+            return;
+        }
+
+        _currentScene = nextScene;
+        _bgm.Play(nextScene switch
+        {
+            GameScene.Title => BgmTrack.Title,
+            GameScene.Battle => BgmTrack.Battle,
+            _ => throw new ArgumentOutOfRangeException(nameof(nextScene))
+        });
+    }
+
     public override void Dispose()
     {
+        _bgm.Dispose();
         _battleScene.Dispose();
         _titleScene.Dispose();
         base.Dispose();

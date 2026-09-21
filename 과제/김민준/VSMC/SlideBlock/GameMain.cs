@@ -4,6 +4,9 @@
 
 using System;
 using System.Drawing;
+using System.IO;
+using System.Media;
+using System.Threading;
 using System.Windows.Forms;
 using Vortice.Mathematics;
 
@@ -28,6 +31,9 @@ class GameMain : G2AppBase
     private Rectangle _btnStartRect = new Rectangle(100, 220, 250, 160);
     private Rectangle _btnExitRect = new Rectangle(450, 220, 250, 160);
 
+    private SoundPlayer? _sndClick = null;
+    private SoundPlayer? _sndSlide = null;
+
     private bool _isMousePrevDown = false;
 
     protected override void Initialize()
@@ -36,6 +42,20 @@ class GameMain : G2AppBase
         _titleTexture = new G2Texture("resource/ui/title.png");
         _btnStartTexture = new G2Texture("resource/ui/start.png");
         _btnExitTexture = new G2Texture("resource/ui/exit.png");
+
+        string clickPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resource", "sound", "click.wav");
+        if (File.Exists(clickPath))
+        {
+            _sndClick = new SoundPlayer(clickPath);
+            _sndClick.Load();
+        }
+
+        string slidePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resource", "sound", "slide.wav");
+        if (File.Exists(slidePath))
+        {
+            _sndSlide = new SoundPlayer(slidePath);
+            _sndSlide.Load();
+        }
     }
 
     protected override void Update()
@@ -46,6 +66,8 @@ class GameMain : G2AppBase
 
         if (isMouseDown && !_isMousePrevDown)
         {
+            _sndClick?.Play();
+
             if (_state == GameState.Title)
             {
                 if (_btnStartRect.Contains(pt))
@@ -54,6 +76,7 @@ class GameMain : G2AppBase
                 }
                 else if (_btnExitRect.Contains(pt))
                 {
+                    Thread.Sleep(150);
                     Environment.Exit(0);
                 }
             }
@@ -63,12 +86,7 @@ class GameMain : G2AppBase
 
         if (_state == GameState.Title)
         {
-            double elapsed = TotalTime;
-            this.ClearColor = new Color4(
-                red: (float)(Math.Sin(elapsed) * 0.5 + 0.5),
-                green: (float)(Math.Sin(elapsed + Math.PI / 2.0) * 0.5 + 0.5),
-                blue: (float)(Math.Sin(elapsed + Math.PI) * 0.5 + 0.5),
-                alpha: 1.0f);
+            this.ClearColor = new Color4(1.0f, 1.0f, 1.0f, 1.0f);
         }
         else
         {
@@ -80,7 +98,7 @@ class GameMain : G2AppBase
     {
         if (_state == GameState.Title)
         {
-            _titleTexture?.Draw(200, 70);
+            _titleTexture?.Draw(160, 70);
             _btnStartTexture?.Draw(100, 220);
             _btnExitTexture?.Draw(450, 220);
         }
@@ -92,11 +110,16 @@ class GameMain : G2AppBase
 
     public override void Dispose()
     {
+        _sndClick?.Dispose();
+        _sndSlide?.Dispose();
+
         _bgTexture?.Dispose();
         _titleTexture?.Dispose();
         _btnStartTexture?.Dispose();
         _btnExitTexture?.Dispose();
 
+        _sndClick = null;
+        _sndSlide = null;
         _bgTexture = null;
         _titleTexture = null;
         _btnStartTexture = null;

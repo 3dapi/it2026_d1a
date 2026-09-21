@@ -16,10 +16,15 @@ class GameMain : G2AppBase
     ID2D1SolidColorBrush white = null!;
     RectangleF startButton = new RectangleF(420, 350, 440, 82);
     RectangleF exitButton = new RectangleF(420, 454, 440, 82);
-    int selectedButton = 0; 
+    G2AudioSound? selectSound;
+    int selectedButton = 0; // 0: 선택 없음, 1: 시작, 2: 나가기
 
     protected override void Initialize()
     {
+        if (G2AudioContext.Instance?.Audio != null)
+        {
+            selectSound = new G2AudioSound("resource/sound/select.wav");
+        }
         ClearColor = new Color4(1, 1, 1, 1);
         background = new G2Texture("resource/menu/background.png");
         runner = new G2Texture("resource/menu/run 3.png");
@@ -34,19 +39,23 @@ class GameMain : G2AppBase
 
     protected override void Update()
     {
+        // 숫자 1을 누르면 시작 버튼을 선택합니다.
+        // 게임 시작 기능은 아직 넣지 않습니다.
         if (Input.IsKeyDown(Keys.D1) || Input.IsKeyDown(Keys.NumPad1))
         {
             selectedButton = 1;
+            selectSound?.Play();
         }
         else if (Input.IsKeyDown(Keys.D2) || Input.IsKeyDown(Keys.NumPad2))
         {
             if (selectedButton == 2)
             {
-                Close(); 
+                Close(); // 나가기가 선택된 상태에서 다시 누르면 종료합니다.
             }
             else
             {
                 selectedButton = 2;
+                selectSound?.Play();
             }
         }
     }
@@ -76,6 +85,7 @@ class GameMain : G2AppBase
 
     public override void Dispose()
     {
+        selectSound?.Dispose();
         background?.Dispose();
         runner?.Dispose();
         jumper?.Dispose();

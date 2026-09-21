@@ -25,7 +25,7 @@ class GameMain : G2AppBase
     private GameState _currentState = GameState.Start;
 
     private float _playTimer = 0f;
-    private const float MaxPlayTime = 300f; // 5분
+    private const float MaxPlayTime = 180f; // 3분
 
     private int _score = 0;
     private bool _isSurvived = false; // true면 5분 생존 성공, false면 몬스터한테 죽음
@@ -57,6 +57,10 @@ class GameMain : G2AppBase
     private G2Font? _hudFontRight;
     private G2Font? _timerFont;
     private G2Font? _resultFont;
+    private G2AudioSound? _sfxShoot;      // 발사음
+    private G2AudioSound? _sfxMonsterHit; // 몬스터 피격음
+    private G2AudioSound? _sfxPlayerHit;  // 플레이어 피격음
+    private G2AudioSound? _sfxGameOver;   // 게임오버(실패)음
 
     protected override void Initialize()
     {
@@ -74,12 +78,14 @@ class GameMain : G2AppBase
         {
             var bullet = _bullets.Find(b => !b.Active);
             bullet?.Fire(x, y);
+            _sfxShoot?.Play(false);
         };
 
         _player.OnDied += () =>
         {
             _isSurvived = false;
             _currentState = GameState.GameOver;
+            _sfxGameOver?.Play(false);
         };
 
         //---------------------------------------
@@ -136,6 +142,11 @@ class GameMain : G2AppBase
             Vortice.DirectWrite.FontStyle.Normal,
             Vortice.DirectWrite.TextAlignment.Center,
             Vortice.DirectWrite.ParagraphAlignment.Center);
+
+        _sfxShoot = new G2AudioSound("resource/sound/laser_shoot8.wav");
+        _sfxMonsterHit = new G2AudioSound("resource/sound/8-bit-hit.wav");
+        _sfxPlayerHit = new G2AudioSound("resource/sound/small-boom.wav");
+        _sfxGameOver = new G2AudioSound("resource/sound/8-bit-game-over.wav");
     }
 
     protected override void Update()
@@ -233,6 +244,7 @@ class GameMain : G2AppBase
                 if (Intersects(bullet.GetBounds(), monster.GetBounds()))
                 {
                     bullet.Deactivate();
+                    _sfxMonsterHit?.Play(false);
                     if (monster.TakeDamage(1))
                     {
                         _score += 100; // 몬스터 처치 점수
@@ -253,6 +265,7 @@ class GameMain : G2AppBase
             {
                 _player.OnHitByMonster();
                 monster.Kill();
+                _sfxPlayerHit?.Play(false);
             }
         }
     }
@@ -267,7 +280,10 @@ class GameMain : G2AppBase
 
     private void UpdateGameOver()
     {
-        // TODO: 필요하면 재시작 입력(예: 스페이스바) 받아서 다시 StartGame() 호출
+        if (G2AppBase.Instance.Input.IsKeyDown(Keys.Space))
+        {
+            StartGame();
+        }
     }
 
     protected override void Render()
@@ -327,8 +343,8 @@ class GameMain : G2AppBase
     {
         string resultText = _isSurvived ? "생존 성공!" : "GAME OVER";
         Color4 resultColor = _isSurvived
-            ? new Color4(0.3f, 1f, 0.4f, 1f)  // 초록색
-            : new Color4(1f, 0.3f, 0.3f, 1f); // 빨간색
+            ? new Color4(0.3f, 1f, 0.4f, 1f)
+            : new Color4(1f, 0.3f, 0.3f, 1f);
 
         _resultFont?.DrawText(resultText,
             new Rect(0, 400, GameGlobal.ScreenSize.Width, 60),
@@ -336,6 +352,10 @@ class GameMain : G2AppBase
 
         _resultFont?.DrawText($"SCORE: {_score}",
             new Rect(0, 470, GameGlobal.ScreenSize.Width, 60),
+            new Color4(1f, 1f, 1f, 1f));
+
+        _guideFont?.DrawText("스페이스바를 눌러 재시작하세요!",
+            new Rect(0, 550, GameGlobal.ScreenSize.Width, 40),
             new Color4(1f, 1f, 1f, 1f));
     }
 
@@ -355,6 +375,11 @@ class GameMain : G2AppBase
         _hudFontRight?.Dispose();
         _timerFont?.Dispose();
         _resultFont?.Dispose();
+
+        _sfxShoot?.Dispose();
+        _sfxMonsterHit?.Dispose();
+        _sfxPlayerHit?.Dispose();
+        _sfxGameOver?.Dispose();
 
         base.Dispose();
     }

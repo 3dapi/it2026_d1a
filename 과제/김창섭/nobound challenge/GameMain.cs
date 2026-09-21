@@ -11,6 +11,7 @@ class GameMain : G2AppBase
     private G2Texture? background;
     private G2Texture? title;
     private G2Texture? gamestart;
+    private G2AudioMp3? bgm;
 
 
 
@@ -25,6 +26,8 @@ class GameMain : G2AppBase
         background = new G2Texture("resource/배경.png");
        gamestart = new G2Texture("resource/게임 시작.png");
        title = new G2Texture("resource/타이틀화면.png");
+        bgm = new G2AudioMp3("resource/bgm.mp3");
+        bgm.Play(true);
     }
 
 	protected override void Update()
@@ -49,14 +52,18 @@ class GameMain : G2AppBase
 
     public override void Dispose()
 	{
-		base.Dispose();
-        //---------------------------------------
-        // 게임 관련 객체를 해제합니다.
-        //---------------------------------------
-        gamestart?.Draw(0,100);
+
+
+        bgm?.Dispose();
+        gamestart?.Draw(0, 100);
         title?.Dispose();
         background?.Dispose();
 
+        base.Dispose();
+        //---------------------------------------
+        // 게임 관련 객체를 해제합니다.
+        //---------------------------------------
+       
 
 
     }

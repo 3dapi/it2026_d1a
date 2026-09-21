@@ -24,7 +24,7 @@ class G2AudioContext : IDisposable
 		try
 		{
 			audio = XAudio2.XAudio2Create();
-			//masteringVoice = audio.CreateMasteringVoice();
+			masteringVoice = audio.CreateMasteringVoice();
 			Audio = audio ?? throw new InvalidOperationException("XAudio2를 초기화할 수 없습니다.");
 			MasteringVoice = masteringVoice;
 		}
@@ -39,7 +39,7 @@ class G2AudioContext : IDisposable
 
 	public void Dispose()
 	{
-		//MasteringVoice.Dispose();
+		MasteringVoice?.Dispose();
 		Audio.Dispose();
 		Instance = null;
 	}

@@ -1,0 +1,11 @@
+Area 0 memory=True time=6.6
+Transitioned to 1
+Area 1 memory=True time=20.2
+Transitioned to 2
+Retry area 2 after 32.4s, mode=Caught
+Retry area 2 after 37.2s, mode=Caught
+Area 2 memory=True time=45.8
+Transitioned to 3
+Area 3 memory=True time=82.2
+Transitioned to 4
+Completed=True mode=Ending memories=4 simulated seconds=92.6

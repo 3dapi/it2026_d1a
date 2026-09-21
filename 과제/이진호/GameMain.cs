@@ -23,16 +23,30 @@ class GameMain : G2AppBase
 	private const float ButtonWidth = 300.0f;
 	private const float ButtonHeight = 70.0f;
 	private const float CharacterGroundY = 470.0f;
-	private const float PlayerWidth = 110.0f;
-	private const float PlayerHeight = 155.0f;
-	private const float EnemyHeight = 150.0f;
+	private const float PlayerWidth = 68.75f;
+	private const float PlayerHeight = 96.875f;
+	private const float SpearEnemyWidth = 105.0f;
+	private const float ArcherEnemyWidth = 84.375f;
+	private const float EnemyHeight = 93.75f;
+	private const float ArrowWidth = 45.0f;
+	private const float ArrowHeight = 15.0f;
+	private const float EnemySpeed = 55.0f;
+	private const float ArrowSpeed = 700.0f;
 
 	private SceneType _scene = SceneType.Start;
 	private double _playStartedAt;
 	private double _survivalTime;
 	private int _killCount;
 	private int _maxArrowCount = 1;
+	private int _playerHealth = 3;
 	private float _playerX = 585.0f;
+	private float _leftEnemyX = 65.0f;
+	private float _rightEnemyX = 1075.0f;
+	private float _arrowX;
+	private float _arrowY;
+	private float _arrowDirection;
+	private bool _arrowFlying;
+	private bool _arrowAvailable = true;
 
 	private G2Texture? _background;
 	private G2Texture? _ground;
@@ -43,6 +57,7 @@ class GameMain : G2AppBase
 	private G2Texture? _skull;
 	private G2Texture? _arrow;
 	private G2Texture? _crosshair;
+	private G2AudioSound? _buttonSound;
 
 	private G2Font? _titleFont;
 	private G2Font? _buttonFont;
@@ -67,6 +82,7 @@ class GameMain : G2AppBase
 		_skull = new G2Texture("resource/image/ui/skull.png");
 		_arrow = new G2Texture("resource/image/arrow/arrow_normal.png");
 		_crosshair = new G2Texture("resource/image/ui/crosshair.png");
+		_buttonSound = new G2AudioSound("resource/sound/button_pop.wav");
 
 		_titleFont = new G2Font(
 			"Malgun Gothic",
@@ -131,6 +147,7 @@ class GameMain : G2AppBase
 
 	public override void Dispose()
 	{
+		_buttonSound?.Dispose();
 		_crosshair?.Dispose();
 		_arrow?.Dispose();
 		_skull?.Dispose();
@@ -181,7 +198,15 @@ class GameMain : G2AppBase
 			_playerX += 300.0f * (float)DeltaTime;
 		}
 
-		_playerX = Math.Clamp(_playerX, 16.0f, 1154.0f);
+		_playerX = Math.Clamp(_playerX, 16.0f, 1280.0f - PlayerWidth - 16.0f);
+
+		if (Input.IsButtonDown(MouseButtons.Left) && _arrowAvailable)
+		{
+			FireArrow();
+		}
+
+		UpdateArrow();
+		UpdateEnemies();
 	}
 
 	private void UpdateGameOverScene()
@@ -189,24 +214,109 @@ class GameMain : G2AppBase
 		if (Input.IsKeyDown(Keys.Enter) || Input.IsKeyDown(Keys.Escape) ||
 			IsButtonClicked(GameOverButtonY))
 		{
+			_buttonSound!.Play();
 			_scene = SceneType.Start;
 		}
 	}
 
 	private void StartGame()
 	{
+		_buttonSound!.Play();
 		_scene = SceneType.Play;
 		_playStartedAt = TotalTime;
 		_survivalTime = 0.0;
 		_killCount = 0;
 		_maxArrowCount = 1;
+		_playerHealth = 3;
 		_playerX = 585.0f;
+		_leftEnemyX = 65.0f;
+		_rightEnemyX = 1075.0f;
+		_arrowFlying = false;
+		_arrowAvailable = true;
 	}
 
 	private void EndGame()
 	{
+		_buttonSound!.Play();
 		_survivalTime = Math.Max(0.0, TotalTime - _playStartedAt);
 		_scene = SceneType.GameOver;
+	}
+
+	private void FireArrow()
+	{
+		float playerCenterX = _playerX + PlayerWidth / 2.0f;
+		var mouse = Input.MousePosition;
+
+		_arrowDirection = mouse.X < playerCenterX ? -1.0f : 1.0f;
+		_arrowX = playerCenterX;
+		_arrowY = CharacterGroundY - PlayerHeight / 2.0f - ArrowHeight / 2.0f;
+		_arrowFlying = true;
+		_arrowAvailable = false;
+		_buttonSound!.Play();
+	}
+
+	private void UpdateArrow()
+	{
+		if (!_arrowFlying)
+		{
+			if (!_arrowAvailable &&
+				_arrowX + ArrowWidth >= _playerX && _arrowX <= _playerX + PlayerWidth)
+			{
+				_arrowAvailable = true;
+			}
+
+			return;
+		}
+
+		_arrowX += ArrowSpeed * _arrowDirection * (float)DeltaTime;
+
+		if (_arrowDirection < 0.0f &&
+			_arrowX <= _leftEnemyX + SpearEnemyWidth && _arrowX + ArrowWidth >= _leftEnemyX)
+		{
+			_arrowFlying = false;
+			_killCount++;
+			_leftEnemyX = -SpearEnemyWidth;
+		}
+		else if (_arrowDirection > 0.0f &&
+			_arrowX + ArrowWidth >= _rightEnemyX && _arrowX <= _rightEnemyX + ArcherEnemyWidth)
+		{
+			_arrowFlying = false;
+			_killCount++;
+			_rightEnemyX = 1280.0f;
+		}
+
+		if (_arrowX < 0.0f)
+		{
+			_arrowX = 0.0f;
+			_arrowFlying = false;
+		}
+		else if (_arrowX > 1280.0f - ArrowWidth)
+		{
+			_arrowX = 1280.0f - ArrowWidth;
+			_arrowFlying = false;
+		}
+	}
+
+	private void UpdateEnemies()
+	{
+		_leftEnemyX += EnemySpeed * (float)DeltaTime;
+		_rightEnemyX -= EnemySpeed * (float)DeltaTime;
+
+		if (_leftEnemyX + SpearEnemyWidth >= _playerX && _leftEnemyX <= _playerX + PlayerWidth)
+		{
+			_playerHealth--;
+			_leftEnemyX = -SpearEnemyWidth;
+		}
+		else if (_rightEnemyX + ArcherEnemyWidth >= _playerX && _rightEnemyX <= _playerX + PlayerWidth)
+		{
+			_playerHealth--;
+			_rightEnemyX = 1280.0f;
+		}
+
+		if (_playerHealth <= 0)
+		{
+			EndGame();
+		}
 	}
 
 	private void DrawBackground()
@@ -245,11 +355,11 @@ class GameMain : G2AppBase
 	private void RenderPlayScene()
 	{
 		_spearEnemy!.Draw(
-			new Rect(65.0f, CharacterGroundY - EnemyHeight, 168.0f, EnemyHeight),
+			new Rect(_leftEnemyX, CharacterGroundY - EnemyHeight, SpearEnemyWidth, EnemyHeight),
 			new Rect(157.0f, 276.0f, 837.0f, 748.0f),
 			interpolationMode: BitmapInterpolationMode.NearestNeighbor);
 		_archerEnemy!.Draw(
-			new Rect(1075.0f, CharacterGroundY - EnemyHeight, 135.0f, EnemyHeight),
+			new Rect(_rightEnemyX, CharacterGroundY - EnemyHeight, ArcherEnemyWidth, EnemyHeight),
 			new Rect(91.0f, 140.0f, 911.0f, 1011.0f),
 			interpolationMode: BitmapInterpolationMode.NearestNeighbor);
 		_player!.Draw(
@@ -261,7 +371,15 @@ class GameMain : G2AppBase
 			new Rect(176.0f, 183.0f, 764.0f, 1080.0f),
 			interpolationMode: BitmapInterpolationMode.NearestNeighbor);
 
-		for (int i = 0; i < 3; i++)
+		if (!_arrowAvailable)
+		{
+			_arrow!.Draw(
+				new Rect(_arrowX, _arrowY, ArrowWidth, ArrowHeight),
+				new Rect(0.0f, 0.0f, 2172.0f, 724.0f),
+				interpolationMode: BitmapInterpolationMode.NearestNeighbor);
+		}
+
+		for (int i = 0; i < _playerHealth; i++)
 		{
 			_heart!.Draw(
 				new Rect(32.0f + i * 44.0f, 24.0f, 36.0f, 34.0f),
@@ -286,10 +404,10 @@ class GameMain : G2AppBase
 			new Rect(1120.0f, 28.0f, 78.0f, 26.0f),
 			new Rect(0.0f, 0.0f, 2172.0f, 724.0f),
 			interpolationMode: BitmapInterpolationMode.NearestNeighbor);
-		_hudFont.DrawText(_maxArrowCount.ToString(), new Rect(1200.0f, 18.0f, 48.0f, 48.0f), new Color4(1.0f));
+		_hudFont.DrawText(_arrowAvailable ? "1" : "0", new Rect(1200.0f, 18.0f, 48.0f, 48.0f), new Color4(1.0f));
 
 		_guideFont!.DrawText(
-			"A / D 이동    ESC 게임 오버",
+			"A / D 이동    마우스 왼쪽 발사    화살에 닿아 회수",
 			new Rect(390.0f, 660.0f, 500.0f, 36.0f),
 			new Color4(1.0f, 1.0f, 1.0f, 0.9f));
 
