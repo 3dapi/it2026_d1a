@@ -3,6 +3,7 @@
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
 using System;
 using System.Windows.Forms;
+using Vortice.Direct3D11on12;
 using Vortice.Mathematics;
 
 class GameMain : G2AppBase
@@ -36,7 +37,7 @@ class GameMain : G2AppBase
     private G2Texture _attackturnTexture = null;
     */
 
-    private G2AudioMp3? _bgm = null;
+    private G2AudioSound? _bgm = null;
 
     /*
     private G2AudioMp3? _gameOverSound = null;
@@ -57,10 +58,10 @@ class GameMain : G2AppBase
         _enemyTexture = new G2Texture(texUiDir + "enemy/enemy.png");
         _exitTexture = new G2Texture(texUiDir + "button/exit_button.png");
 
-        //var sndDir = "resource/sound/";
-        //_bgm = new G2AudioMp3(sndDir + "bgm.mp3");
+		var sndDir = "resource/sound/";
+        _bgm = new G2AudioSound(sndDir + "bgm.wav");
 
-        //_bgm.Play(true);
+        _bgm.Play(true);
     }
 
     protected override void Update()

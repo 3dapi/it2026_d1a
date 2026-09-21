@@ -31,8 +31,8 @@ class GameMain : G2AppBase
     private Rectangle _btnStartRect = new Rectangle(100, 220, 250, 160);
     private Rectangle _btnExitRect = new Rectangle(450, 220, 250, 160);
 
-    private SoundPlayer? _sndClick = null;
-    private SoundPlayer? _sndSlide = null;
+    private G2AudioSound? _sndClick = null;
+    private G2AudioMp3? _sndSlide = null;
 
     private bool _isMousePrevDown = false;
 
@@ -43,19 +43,8 @@ class GameMain : G2AppBase
         _btnStartTexture = new G2Texture("resource/ui/start.png");
         _btnExitTexture = new G2Texture("resource/ui/exit.png");
 
-        string clickPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resource", "sound", "click.wav");
-        if (File.Exists(clickPath))
-        {
-            _sndClick = new SoundPlayer(clickPath);
-            _sndClick.Load();
-        }
-
-        string slidePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "resource", "sound", "slide.wav");
-        if (File.Exists(slidePath))
-        {
-            _sndSlide = new SoundPlayer(slidePath);
-            _sndSlide.Load();
-        }
+        _sndClick = new G2AudioSound("resource/sound/sound.wav");
+        _sndSlide = new G2AudioMp3("resource/sound/slide.mp3");
     }
 
     protected override void Update()

@@ -1,4 +1,4 @@
-﻿// -------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Author: 3dapi (https://github.com/3dapi)
 // MEMORY CODE - graphics resource / game start demonstration
 // -------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -36,6 +36,13 @@ class GameMain : G2AppBase
     private G2Texture? _wrongUiTexture;
 
     private G2Font? _font;
+
+    // 게임 효과음
+    private G2AudioSound? _clickSound;
+    private G2AudioSound? _startSound;
+    private G2AudioSound? _memorizeSound;
+    private G2AudioSound? _correctSound;
+    private G2AudioSound? _wrongSound;
     private GameState _state = GameState.Start;
     private double _stateTime;
     private readonly StringBuilder _input = new();
@@ -54,7 +61,12 @@ class GameMain : G2AppBase
         _correctUiTexture = new G2Texture(texUiDir + "correctui.png");
         _wrongUiTexture = new G2Texture(texUiDir + "wrongui.png");
 
-
+        const string soundDir = "resource/sound/";
+        _clickSound = new G2AudioSound(soundDir + "click.wav");
+        _startSound = new G2AudioSound(soundDir + "start.wav");
+        _memorizeSound = new G2AudioSound(soundDir + "memorize.wav");
+        _correctSound = new G2AudioSound(soundDir + "correct.wav");
+        _wrongSound = new G2AudioSound(soundDir + "wrong.wav");
 
         _font = new G2Font(
          "Consolas",
@@ -84,6 +96,7 @@ class GameMain : G2AppBase
                 if (Input.IsKeyDown(Keys.Enter) || Input.IsKeyDown(Keys.Space))
                 {
                     _input.Clear();
+                    _startSound?.Play(false);
                     SetState(GameState.Memorize);
                 }
                 break;
@@ -124,22 +137,26 @@ class GameMain : G2AppBase
                 _input.Length < FirstCode.Length)
             {
                 _input.Append((char)('0' + digit));
+                _clickSound?.Play(false);
             }
         }
 
         if (Input.IsKeyDown(Keys.Back) && _input.Length > 0)
         {
             _input.Remove(_input.Length - 1, 1);
+            _clickSound?.Play(false);
         }
 
         if (Input.IsKeyDown(Keys.Enter) && _input.Length == FirstCode.Length)
         {
             if (_input.ToString() == FirstCode)
             {
+                _correctSound?.Play(false);
                 SetState(GameState.Correct);
             }
             else
             {
+                _wrongSound?.Play(false);
                 SetState(GameState.Wrong);
             }
         }
@@ -155,6 +172,10 @@ class GameMain : G2AppBase
     {
         _state = state;
         _stateTime = 0.0;
+        if (state == GameState.Memorize)
+        {
+            _memorizeSound?.Play(false);
+        }
     }
 
     protected override void Render()
@@ -234,7 +255,18 @@ class GameMain : G2AppBase
         _correctUiTexture?.Dispose();
         _wrongUiTexture?.Dispose();
 
+        _clickSound?.Dispose();
+        _startSound?.Dispose();
+        _memorizeSound?.Dispose();
+        _correctSound?.Dispose();
+        _wrongSound?.Dispose();
+
         _font?.Dispose();
+        _clickSound = null;
+        _startSound = null;
+        _memorizeSound = null;
+        _correctSound = null;
+        _wrongSound = null;
         _gameStartTexture = null;
         _playUiTexture = null;
         _inGameTexture = null;
